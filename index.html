@@ -1164,9 +1164,9 @@ async function guardarOrden() {
     for (const tarea of tareasValidas) {
       await spRequest('POST', 'tareas orden', {
         Title:          tarea.descripcion,
-        NumeroOrden:    numOrden,
-        TiempoEstimado: tarea.tiempoEstimado || '',
-        TiempoReal:     tarea.tiempoReal || '',
+        TiempoEstimado: tarea.tiempoEstimado || '',  // InternalName: TiempoEstimado
+        NumeroOrden:    tarea.tiempoReal || '',       // InternalName: NumeroOrden → muestra "TiempoReal"
+        tipo:           numOrden,                    // InternalName: tipo → guarda el número de orden
         Responsable:    tarea.responsable || '',
         OK:             tarea.ok ? 'SI' : 'NO'
       });
@@ -1176,11 +1176,12 @@ async function guardarOrden() {
     const repuestosValidos = datos.repuestos ? datos.repuestos.filter(r => r.nombre) : [];
     for (const rep of repuestosValidos) {
       await spRequest('POST', 'repuestoorden', {
-        Title:       rep.nombre,
-        NumeroOrden: numOrden,
-        Codigo:      rep.codigo || '',
-        Cantidad:    rep.cantidad || '',
-        Unidades:    rep.unidades || ''
+        Title:        rep.nombre,
+        tipo:         rep.codigo || '',      // InternalName: tipo → "Codigo"
+        Cantidad:     rep.cantidad || '',
+        Unidades:     rep.unidades || '',
+        Numeroorden:  numOrden,              // InternalName: Numeroorden (minúscula 'o')
+        CostoUnit:    rep.costoUnit || ''
       });
     }
 
@@ -1188,11 +1189,12 @@ async function guardarOrden() {
     const insumosValidos = datos.insumos ? datos.insumos.filter(i => i.nombre) : [];
     for (const ins of insumosValidos) {
       await spRequest('POST', 'insumoorden', {
-        Title:       ins.nombre,
-        NumeroOrden: numOrden,
-        Codigo:      ins.codigo || '',
-        Cantidad:    ins.cantidad || '',
-        Unidades:    ins.unidades || ''
+        Title:      ins.nombre,
+        tipo:       ins.codigo || '',     // InternalName: tipo → "Codigo"
+        Cantidades: ins.cantidad || '',   // InternalName: Cantidades
+        Unidades:   ins.unidades || '',
+        CostoUnit:  ins.costoUnit || '',
+        Numeroorden: numOrden             // InternalName: Numeroorden (linkTitle)
       });
     }
 
