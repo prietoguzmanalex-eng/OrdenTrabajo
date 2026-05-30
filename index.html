@@ -1064,7 +1064,7 @@ async function spRequest(method, listName, body, id) {
       'X-RequestDigest': 'bypass'
     },
     body: body ? JSON.stringify({
-      __metadata: { type: 'SP.Data.' + listName.replace(/\s/g,'') + 'ListItem' },
+      __metadata: { type: ({'OrdenesTrabajo':'SP.Data.OrdenesTrabajoListItem','tareas orden':'SP.Data.Tareas_x0020_ordenListItem','repuestoorden':'SP.Data.RepuestoordenListItem','insumoorden':'SP.Data.InsumoordenListItem'})[listName] || ('SP.Data.' + listName.replace(/s/g,'') + 'ListItem') },
       ...body
     }) : undefined
   });
