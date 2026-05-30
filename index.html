@@ -1047,42 +1047,26 @@ async function spRequest(method, listName, body, id) {
   const token = await getSpToken();
 
   if (!token) {
-    // Modo demo
     return new Promise(resolve => setTimeout(() => {
-      resolve(method === 'GET' ? { value: DEMO_DATA } : { d: { ID: Date.now() } });
+      resolve(method === 'GET' ? { value: DEMO_DATA } : { id: Date.now() });
     }, 400));
   }
 
   let url = `${SP_URL}/_api/web/lists/getbytitle('${encodeURIComponent(listName)}')/items`;
   if (id) url += `(${id})`;
 
-  const headers = {
-    'Authorization': 'Bearer ' + token,
-    'Accept': 'application/json;odata=nometadata',
-    'Content-Type': 'application/json;odata=nometadata',
-  };
-
-  if (method === 'POST' || method === 'PATCH') {
-    // Obtener digest para escritura
-    try {
-      const digestResp = await fetch(`${SP_URL}/_api/contextinfo`, {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json;odata=verbose' }
-      });
-      const digestData = await digestResp.json();
-      headers['X-RequestDigest'] = digestData.d?.GetContextWebInformation?.FormDigestValue || '';
-    } catch(e) { console.warn('Sin digest:', e.message); }
-  }
-
-  if (method === 'PATCH') {
-    headers['X-HTTP-Method'] = 'MERGE';
-    headers['IF-MATCH'] = '*';
-  }
-
   const resp = await fetch(url, {
-    method: method === 'PATCH' ? 'POST' : method,
-    headers,
-    body: body ? JSON.stringify({ ...body }) : undefined
+    method: method,
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/json;odata=verbose',
+      'Content-Type': 'application/json;odata=verbose',
+      'X-RequestDigest': 'bypass'
+    },
+    body: body ? JSON.stringify({
+      __metadata: { type: 'SP.Data.' + listName.replace(/\s/g,'') + 'ListItem' },
+      ...body
+    }) : undefined
   });
 
   if (!resp.ok) {
