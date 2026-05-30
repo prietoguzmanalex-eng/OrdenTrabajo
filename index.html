@@ -1058,8 +1058,8 @@ async function spRequest(method, listName, body, id) {
 
   const headers = {
     'Authorization': 'Bearer ' + token,
-    'Accept': 'application/json;odata=verbose',
-    'Content-Type': 'application/json;odata=verbose',
+    'Accept': 'application/json;odata=nometadata',
+    'Content-Type': 'application/json;odata=nometadata',
   };
 
   if (method === 'POST' || method === 'PATCH') {
@@ -1082,7 +1082,7 @@ async function spRequest(method, listName, body, id) {
   const resp = await fetch(url, {
     method: method === 'PATCH' ? 'POST' : method,
     headers,
-    body: body ? JSON.stringify({ __metadata: { type: 'SP.Data.OrdenesTrabajoListItem' }, ...body }) : undefined
+    body: body ? JSON.stringify({ ...body }) : undefined
   });
 
   if (!resp.ok) {
