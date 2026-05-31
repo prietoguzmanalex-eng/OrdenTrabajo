@@ -8,7 +8,12 @@
 <!-- Microsoft Teams SDK -->
 <script src="https://res.cdn.office.net/teams-js/2.22.0/js/MicrosoftTeams.min.js"></script>
 <!-- Microsoft Authentication Library -->
-<script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+<script src="https://alcdn.msauth.net/browser/2.39.0/js/msal-browser.min.js" crossorigin="anonymous"></script>
+<script>
+  if (typeof msal === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.39.0/lib/msal-browser.min.js"><\/script>');
+  }
+</script>
 <!-- Microsoft Graph Toolkit -->
 <script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 
