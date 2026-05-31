@@ -1180,8 +1180,7 @@ async function guardarOrden() {
         tipo:       ins.codigo || '',     // InternalName: tipo → "Codigo"
         Cantidades: ins.cantidad || '',   // InternalName: Cantidades
         Unidades:   ins.unidades || '',
-        CostoUnit:  ins.costoUnit || '',
-        Numeroorden: numOrden             // InternalName: Numeroorden (linkTitle)
+        CostoUnit:  ins.costoUnit || ''
       });
     }
 
@@ -1215,7 +1214,7 @@ async function cargarOrdenes() {
   document.getElementById('spinnerLista').classList.add('show');
   document.getElementById('listaContainer').innerHTML = '';
   try {
-    const token = await getToken();
+    const token = await getSpToken();
     const resp = await fetch(
       `${M365_CONFIG.siteUrl}/_api/web/lists/getbytitle('${M365_CONFIG.listOrdenes}')/items?$orderby=Created desc&$top=500`,
       { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json;odata=verbose' } }
