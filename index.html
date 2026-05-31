@@ -1089,20 +1089,7 @@ function generarNumeroDemo() {
   return 'OT-' + String(DEMO_COUNTER++).padStart(5,'0');
 }
 
-let DEMO_DATA = [
-  { id:'1', NumeroOrden:'OT-00001', Title:'Mantenimiento preventivo compresor', Equipo:'COMP-01',
-    TipoMantenimiento:'Preventivo', Prioridad:'Alta', Estado:'Aprobada',
-    SolicitadaPor:'Carlos Ruiz', FechaInicio:'2026-05-01', FechaFin:'2026-05-03',
-    Responsable:'Pedro López', CostoTotal:450000 },
-  { id:'2', NumeroOrden:'OT-00002', Title:'Cambio rodamientos bomba centrífuga', Equipo:'BOMB-03',
-    TipoMantenimiento:'Correctivo', Prioridad:'Urgente', Estado:'Pendiente aprobación',
-    SolicitadaPor:'Ana Gómez', FechaInicio:'2026-05-10', FechaFin:'2026-05-11',
-    Responsable:'Luis Torres', CostoTotal:820000 },
-  { id:'3', NumeroOrden:'OT-00003', Title:'Inspección tablero eléctrico principal', Equipo:'TABL-A',
-    TipoMantenimiento:'Predictivo', Prioridad:'Normal', Estado:'Borrador',
-    SolicitadaPor:'María Castro', FechaInicio:'2026-05-20', FechaFin:'2026-05-20',
-    Responsable:'Juan Díaz', CostoTotal:120000 },
-];
+let DEMO_DATA = [];
 
 /* ══════════════════════════════════════════════
    GUARDAR ORDEN
