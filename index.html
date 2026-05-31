@@ -1228,10 +1228,33 @@ async function cargarOrdenes() {
   document.getElementById('spinnerLista').classList.add('show');
   document.getElementById('listaContainer').innerHTML = '';
   try {
-    const res = await graphRequest('GET', `sites/${M365_CONFIG.siteId}/lists/${M365_CONFIG.listOrdenes}/items?expand=fields`);
-    allOrdenes = (res.value || DEMO_DATA).map(i => i.fields || i);
+    const token = await getToken();
+    const resp = await fetch(
+      `${M365_CONFIG.siteUrl}/_api/web/lists/getbytitle('${M365_CONFIG.listOrdenes}')/items?$orderby=Created desc&$top=500`,
+      { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json;odata=verbose' } }
+    );
+    if (!resp.ok) throw new Error('Error ' + resp.status);
+    const data = await resp.json();
+    allOrdenes = (data.d?.results || []).map(item => ({
+      id:               item.ID,
+      NumeroOrden:      item.Title,
+      Title:            item.DescripcionTrabajo || item.Title,
+      Estado:           item.Estado,
+      TipoMantenimiento: item.TipoMantenimiento,
+      Equipo:           item.Equipo,
+      Responsable:      item.Responsable,
+      FechaInicio:      item.FechaInicio,
+      Prioridad:        item.Prioridad,
+      CostoTotal:       item.CostoTotal,
+      Ubicacion:        item.Ubicacion,
+      Solicitante:      item.Solicitante,
+      FechaFin:         item.FechaFin,
+      Observaciones:    item.Observaciones
+    }));
+    if (allOrdenes.length === 0) allOrdenes = DEMO_DATA;
     filtrarOrdenes();
   } catch(e) {
+    console.error('Error cargando ordenes:', e);
     allOrdenes = DEMO_DATA;
     filtrarOrdenes();
   } finally {
