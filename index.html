@@ -1138,7 +1138,7 @@ async function guardarOrden() {
     const res = await spRequest('POST', M365_CONFIG.listOrdenes, {
       Title:         datos.Title || 'Sin descripcion',
       Equipo:        datos.Equipo || '',
-      Estado:        'Pendiente aprobacion',
+      Estado:        'Pendiente aprobación',
       Prioridad:     datos.Prioridad || 'Normal',
       SolicitadaPor: datos.SolicitadaPor || '',
       Responsable:   datos.Responsable || '',
@@ -1185,7 +1185,7 @@ async function guardarOrden() {
     }
 
     // Agregar a cache local para mostrar inmediatamente
-    DEMO_DATA.push({
+    allOrdenes.push({
       id: res.id || Date.now().toString(),
       NumeroOrden: numOrden,
       Title: datos.Title, Equipo: datos.Equipo,
@@ -1308,7 +1308,7 @@ function badgeClass(estado) {
 async function verDetalle(id) {
   showPanel('detalle');
   const orden = allOrdenes.find(o => (o.id||o.NumeroOrden) === id) ||
-                DEMO_DATA.find(o => (o.id||o.NumeroOrden) === id) || {};
+                allOrdenes.find(o => (o.id||o.NumeroOrden) === id) || {};
 
   const canApprove = orden.Estado === 'Pendiente aprobación';
   document.getElementById('panelAprobacionDetalle').style.display = canApprove ? 'block' : 'none';
@@ -1416,7 +1416,7 @@ function campo(label, val) {
 ══════════════════════════════════════════════ */
 async function cargarAprobaciones() {
   document.getElementById('spinnerApro').classList.add('show');
-  const pendientes = DEMO_DATA.filter(o => o.Estado === 'Pendiente aprobación');
+  const pendientes = allOrdenes.filter(o => o.Estado === 'Pendiente aprobación');
   await new Promise(r => setTimeout(r, 500));
   document.getElementById('spinnerApro').classList.remove('show');
 
@@ -1447,7 +1447,7 @@ async function cargarAprobaciones() {
 }
 
 async function aprobarRapido(id) {
-  const o = DEMO_DATA.find(x => (x.id||x.NumeroOrden) === id);
+  const o = allOrdenes.find(x => (x.id||x.NumeroOrden) === id);
   if (o) { o.Estado = 'Aprobada'; }
   const div = document.querySelector(`[onclick*="${id}"]`)?.closest('.approval-box');
   if (div) { div.style.background = '#dff6dd'; div.style.borderColor = '#92d89e'; }
@@ -1464,7 +1464,7 @@ function cambiarEstado(nuevoEstado) {
     alert('El comentario es obligatorio para rechazar una orden.');
     return;
   }
-  const o = DEMO_DATA.find(x => (x.id||x.NumeroOrden) === currentOrderId);
+  const o = allOrdenes.find(x => (x.id||x.NumeroOrden) === currentOrderId);
   if (o) o.Estado = nuevoEstado;
   verDetalle(currentOrderId);
   document.getElementById('panelAprobacionDetalle').style.display = 'none';
@@ -1475,10 +1475,10 @@ function cambiarEstado(nuevoEstado) {
 ══════════════════════════════════════════════ */
 async function cargarDashboard() {
   await new Promise(r => setTimeout(r, 400));
-  const total     = DEMO_DATA.length;
-  const aprobadas = DEMO_DATA.filter(o => o.Estado === 'Aprobada').length;
-  const pend      = DEMO_DATA.filter(o => o.Estado === 'Pendiente aprobación').length;
-  const costo     = DEMO_DATA.reduce((s,o) => s + (Number(o.CostoTotal)||0), 0);
+  const total     = allOrdenes.length;
+  const aprobadas = allOrdenes.filter(o => o.Estado === 'Aprobada').length;
+  const pend      = allOrdenes.filter(o => o.Estado === 'Pendiente aprobación').length;
+  const costo     = allOrdenes.reduce((s,o) => s + (Number(o.CostoTotal)||0), 0);
 
   document.getElementById('kpi_total').textContent     = total;
   document.getElementById('kpi_aprobadas').textContent = aprobadas;
@@ -1487,7 +1487,7 @@ async function cargarDashboard() {
 
   // Chart
   const tipoCount = {};
-  DEMO_DATA.forEach(o => { tipoCount[o.TipoMantenimiento||'Otro'] = (tipoCount[o.TipoMantenimiento||'Otro']||0) + 1; });
+  allOrdenes.forEach(o => { tipoCount[o.TipoMantenimiento||'Otro'] = (tipoCount[o.TipoMantenimiento||'Otro']||0) + 1; });
   const ctx = document.getElementById('chartTipo').getContext('2d');
   if (window._chartTipo) window._chartTipo.destroy();
   window._chartTipo = new Chart(ctx, {
