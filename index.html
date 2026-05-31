@@ -1136,14 +1136,21 @@ async function guardarOrden() {
 
     // Guardar en SharePoint via REST API con campos correctos
     const res = await spRequest('POST', M365_CONFIG.listOrdenes, {
-      Title:         datos.Title || 'Sin descripcion',
-      Equipo:        datos.Equipo || '',
-      Estado:        'Pendiente aprobación',
-      Prioridad:     datos.Prioridad || 'Normal',
-      SolicitadaPor: datos.SolicitadaPor || '',
-      Responsable:   datos.Responsable || '',
-      UserEmail:     datos.UserEmail || '',
-      NumeroOrden:   numOrden
+      Title:            datos.Title || 'Sin descripcion',
+      Equipo:           datos.Equipo || '',
+      Estado:           'Pendiente aprobación',
+      Prioridad:        datos.Prioridad || 'Normal',
+      SolicitadaPor:    datos.SolicitadaPor || '',
+      AutorizadaPor:    datos.AutorizadaPor || '',
+      Responsable:      datos.Responsable || '',
+      Supervisor:       datos.Supervisor || '',
+      FechaInicio:      datos.FechaInicio || '',
+      FechaFin:         datos.FechaFin || '',
+      TipoMantenimiento: datos.TipoMantenimiento || '',
+      MedidasSeguridad: datos.MedidasSeguridad || '',
+      Observaciones:    datos.Observaciones || '',
+      UserEmail:        datos.UserEmail || '',
+      NumeroOrden:      numOrden
     });
 
     // Guardar tareas en SharePoint
@@ -1223,8 +1230,8 @@ async function cargarOrdenes() {
     const data = await resp.json();
     allOrdenes = (data.d?.results || []).map(item => ({
       id:               item.ID,
-      NumeroOrden:      item.Title,
-      Title:            item.DescripcionTrabajo || item.Title,
+      NumeroOrden:      item.NumeroOrden || item.Title,
+      Title:            item.Title,
       Estado:           item.Estado,
       TipoMantenimiento: item.TipoMantenimiento,
       Equipo:           item.Equipo,
@@ -1232,10 +1239,13 @@ async function cargarOrdenes() {
       FechaInicio:      item.FechaInicio,
       Prioridad:        item.Prioridad,
       CostoTotal:       item.CostoTotal,
-      Ubicacion:        item.Ubicacion,
-      Solicitante:      item.Solicitante,
+      SolicitadaPor:    item.SolicitadaPor,
+      AutorizadaPor:    item.AutorizadaPor,
       FechaFin:         item.FechaFin,
-      Observaciones:    item.Observaciones
+      Supervisor:       item.Supervisor,
+      Observaciones:    item.Observaciones,
+      MedidasSeguridad: item.MedidasSeguridad,
+      UserEmail:        item.UserEmail
     }));
     if (allOrdenes.length === 0) allOrdenes = DEMO_DATA;
     filtrarOrdenes();
