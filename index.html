@@ -1317,8 +1317,7 @@ function badgeClass(estado) {
 ══════════════════════════════════════════════ */
 async function verDetalle(id) {
   showPanel('detalle');
-  const orden = allOrdenes.find(o => (o.id||o.NumeroOrden) === id) ||
-                allOrdenes.find(o => (o.id||o.NumeroOrden) === id) || {};
+  const orden = allOrdenes.find(o => String(o.id) === String(id) || o.NumeroOrden === id) || {};
 
   const canApprove = orden.Estado === 'Pendiente aprobación';
   document.getElementById('panelAprobacionDetalle').style.display = canApprove ? 'block' : 'none';
@@ -1457,7 +1456,7 @@ async function cargarAprobaciones() {
 }
 
 async function aprobarRapido(id) {
-  const o = allOrdenes.find(x => (x.id||x.NumeroOrden) === id);
+  const o = allOrdenes.find(x => String(x.id) === String(id) || x.NumeroOrden === id);
   if (o) { o.Estado = 'Aprobada'; }
   const div = document.querySelector(`[onclick*="${id}"]`)?.closest('.approval-box');
   if (div) { div.style.background = '#dff6dd'; div.style.borderColor = '#92d89e'; }
@@ -1474,7 +1473,7 @@ function cambiarEstado(nuevoEstado) {
     alert('El comentario es obligatorio para rechazar una orden.');
     return;
   }
-  const o = allOrdenes.find(x => (x.id||x.NumeroOrden) === currentOrderId);
+  const o = allOrdenes.find(x => String(x.id) === String(currentOrderId) || x.NumeroOrden === currentOrderId);
   if (o) o.Estado = nuevoEstado;
   verDetalle(currentOrderId);
   document.getElementById('panelAprobacionDetalle').style.display = 'none';
